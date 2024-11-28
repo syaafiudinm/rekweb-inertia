@@ -17,6 +17,9 @@ export default function Home({ posts }) {
                             </span>
                         </div>
                         <p className="font-medium">{post.body}</p>
+                        <Link className="text-link" href={`/posts/${post.id}`}>
+                            Read More ...
+                        </Link>
                     </div>
                 ))}
             </div>
