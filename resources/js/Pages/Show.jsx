@@ -1,13 +1,36 @@
 import { useForm } from "@inertiajs/react";
 import { useRoute } from "../../../vendor/tightenco/ziggy/src/js";
+import Swal from "sweetalert2";
 
 export default function Show({ post }) {
     const { delete: destroy } = useForm();
     const route = useRoute();
 
+    function showAlert() {
+        Swal.fire({
+            title: "Are you sure want to delete it?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                destroy(route("posts.destroy", post)); // Assuming this is a method you use to delete the post
+                Swal.fire(
+                    "Deleted!",
+                    "Your file has been deleted.",
+                    "success"
+                ).then(() => {
+                    window.location.href = "/";
+                });
+            }
+        });
+    }
     function submit(e) {
         e.preventDefault();
-        destroy(route("posts.destroy", post));
+        showAlert();
     }
 
     return (
