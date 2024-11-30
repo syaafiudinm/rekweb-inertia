@@ -49,8 +49,6 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        
-
         return inertia('Show',[
             'post' => $post
         ]);
@@ -77,6 +75,10 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        sleep(2);
+        $post->delete();
+        
+
+        return redirect('/')->with('message', 'Post deleted successfully');
     }
 }

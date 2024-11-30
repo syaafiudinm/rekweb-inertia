@@ -1,9 +1,25 @@
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
+import { useRoute } from "../../../vendor/tightenco/ziggy";
 
 export default function Home({ posts }) {
+    const route = useRoute();
+
+    const { flash } = usePage().props;
+
+    console.log(usePage());
     return (
         <>
-            <h1 className="title">Hello</h1>
+            <h1 className="title">Home</h1>
+
+            {flash.message && (
+                <div
+                    class="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 rounded-lg mb-5"
+                    role="alert"
+                >
+                    <p class="font-bold">Alert</p>
+                    <p>{flash.message}</p>
+                </div>
+            )}
             <div>
                 {posts.data.map((post) => (
                     <div
@@ -16,9 +32,12 @@ export default function Home({ posts }) {
                                 {new Date(post.created_at).toLocaleTimeString()}
                             </span>
                         </div>
-                        <p className="font-medium">{post.body}</p>
-                        <Link className="text-link" href={`/posts/${post.id}`}>
-                            Read More ...
+                        <p className="font-medium mb-3">{post.body}</p>
+                        <Link
+                            href={route("posts.show", post)}
+                            className="text-link"
+                        >
+                            Read More . . .
                         </Link>
                     </div>
                 ))}
