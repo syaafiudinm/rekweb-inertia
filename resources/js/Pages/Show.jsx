@@ -1,4 +1,4 @@
-import { useForm } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 import { useRoute } from "../../../vendor/tightenco/ziggy/src/js";
 import Swal from "sweetalert2";
 
@@ -40,7 +40,7 @@ export default function Show({ post }) {
                 <p>{post.body}</p>
                 <p className="text-sm mt-5">Author: {post.author}</p>
             </div>
-            <div className="mt-5">
+            <div className="mt-5 flex gap-3">
                 <form onSubmit={submit}>
                     <button
                         type="submit"
@@ -49,6 +49,12 @@ export default function Show({ post }) {
                         Delete
                     </button>
                 </form>
+                <Link
+                    className="bg-green-500 hover:bg-green-600 py-2 px-4 rounded-lg text-white"
+                    href="/posts/edit"
+                >
+                    Edit
+                </Link>
             </div>
         </>
     );

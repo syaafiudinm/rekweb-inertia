@@ -6,16 +6,32 @@ use App\Models\Post;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 
+use function PHPSTORM_META\type;
+
 class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::latest()->paginate(5);
-        return inertia('Home',[
-            'posts' => $posts
+        $search = $request->input('search');
+
+        $posts = Post::query()
+        ->when($search, function ($query, $search) {
+            return $query->where('author', 'like', "%$search%")
+            ->orWhere('title', 'like', "%$search%")
+            ->orWhere('body', 'like', "%$search%");
+        })
+        ->latest()
+        ->paginate(10);
+
+    // Kirim data ke frontend
+        return inertia('Home', [
+            'posts' => $posts,
+            'filters' => [
+                'search' => $search,
+            ],
         ]);
     }   
 
@@ -41,7 +57,10 @@ class PostController extends Controller
 
         Post::create($fields);
 
-        return redirect('/');
+        return redirect('/')->with([
+            'message' => 'Post created successfully',
+            'type' => 'success',
+        ]);
     }
 
     /**
@@ -79,6 +98,8 @@ class PostController extends Controller
         $post->delete();
         
 
-        return redirect('/')->with('message', 'Post deleted successfully');
+        return redirect('/')->with([
+            'message' => 'Post deleted successfully',
+            'type' => 'success']);
     }
 }
