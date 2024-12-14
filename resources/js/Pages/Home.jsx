@@ -48,39 +48,40 @@ export default function Home({ posts, filters }) {
         <>
             <Head title={component} />
             <h1 className="title">Home</h1>
-
-            <form onSubmit={handleSearch} className="flex mb-3">
-                <input
-                    type="text"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search"
-                    className="border border-slate-300 rounded-l-lg px-4 py-2 w-full"
-                />
+            <div className="w-2/3 mx-auto">
+                <form onSubmit={handleSearch} className="flex mb-3">
+                    <input
+                        type="text"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder="Search"
+                        className="border border-slate-300 rounded-l-lg px-4 py-2 w-full"
+                    />
+                    <button
+                        type="submit"
+                        className="bg-blue-500 text-white px-4 py-2 rounded-r-lg"
+                    >
+                        Search
+                    </button>
+                </form>
                 <button
-                    type="submit"
-                    className="bg-blue-500 text-white px-4 py-2 rounded-r-lg"
+                    type="button" // Pastikan type 'button' untuk reset
+                    onClick={() => {
+                        setSearch(""); // Reset search input
+                        router.get(
+                            route("Home"),
+                            {},
+                            {
+                                preserveState: true,
+                                preserveScroll: true,
+                            }
+                        );
+                    }}
+                    className="bg-gray-500 text-white px-4 py-2 rounded mb-5"
                 >
-                    Search
+                    Reset
                 </button>
-            </form>
-            <button
-                type="button" // Pastikan type 'button' untuk reset
-                onClick={() => {
-                    setSearch(""); // Reset search input
-                    router.get(
-                        route("Home"),
-                        {},
-                        {
-                            preserveState: true,
-                            preserveScroll: true,
-                        }
-                    );
-                }}
-                className="bg-gray-500 text-white px-4 py-2 rounded mb-5"
-            >
-                Reset
-            </button>
+            </div>
 
             {flashMsg && (
                 <div className={`${flashStyles[flashType]}`} role="alert">
