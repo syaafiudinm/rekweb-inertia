@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useForm } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 
 const Login = () => {
     const { data, setData, post, errors } = useForm({
@@ -13,15 +13,20 @@ const Login = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="mt-24 flex flex-col gap-5 mx-64 bg-slate-100 p-8 rounded-lg">
+        <form
+            onSubmit={handleSubmit}
+            className="mt-24 flex flex-col gap-5 mx-64 bg-slate-100 p-8 rounded-lg"
+        >
+            <h1 className="text-2xl text-center">Login Here!</h1>
             <div>
                 <label>Email</label>
                 <input
                     type="email"
                     value={data.email}
                     onChange={(e) => setData("email", e.target.value)}
+                    className={errors.email && "!ring-red-500"}
                 />
-                {errors.email && <div>{errors.email}</div>}
+                {errors.email && <p className="text-red-500">{errors.email}</p>}
             </div>
             <div>
                 <label>Password</label>
@@ -29,10 +34,14 @@ const Login = () => {
                     type="password"
                     value={data.password}
                     onChange={(e) => setData("password", e.target.value)}
+                    className={errors.password && "!ring-red-500"}
                 />
-                {errors.password && <div>{errors.password}</div>}
+                {errors.password && <p className="text-red-500">{errors.password}</p>}
             </div>
-            <button type="submit" className="primary-btn">Login</button>
+            <button type="submit" className="primary-btn">
+                Login
+            </button>
+            <p className="text-sm text-center">Don't have an account? <Link href="/register" className="text-link">Register</Link></p>
         </form>
     );
 };

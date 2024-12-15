@@ -27,7 +27,7 @@
         @apply bg-blue-600 shadow-md;
     }
     nav {
-        @apply p-5 max-w-screen-lg mx-auto flex items-center justify-between;
+        @apply p-5  flex items-center justify-center gap-5;
     }
     main {
         @apply max-w-screen-lg mx-auto;

@@ -1,11 +1,12 @@
 import { Head, Link, usePage, router } from "@inertiajs/react";
 import { useRoute } from "../../../vendor/tightenco/ziggy";
 import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 
 export default function Home({ posts, filters }) {
     const route = useRoute();
-    const { component } = usePage();
-    const { flash } = usePage().props;
+    const { component, props } = usePage();
+    const { flash, auth } = props;
     const [flashMsg, setFlashMsg] = useState(flash.message);
     const [flashType, setFlashType] = useState(flash.type);
     const [search, setSearch] = useState(filters.search);
@@ -44,10 +45,38 @@ export default function Home({ posts, filters }) {
         );
     };
 
+    function showAlert() {
+        Swal.fire({
+            title: "Are you sure want to logout?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "logout!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.post(route("logout")); // Assuming this is a method you use to delete the post
+                Swal.fire("Logout!", "You has been logout.", "success").then(
+                    () => {
+                        window.location.href = "/";
+                    }
+                );
+            }
+        });
+    }
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        showAlert();
+    };
+
     return (
         <>
             <Head title={component} />
-            <h1 className="title">Home</h1>
+            <h1 className="title">
+                Welcome {auth.user ? auth.user.name : "Guest"}
+            </h1>
             <div className="w-2/3 mx-auto">
                 <form onSubmit={handleSearch} className="flex mb-3">
                     <input
@@ -63,24 +92,14 @@ export default function Home({ posts, filters }) {
                     >
                         Search
                     </button>
+                    <button
+                        className="ml-3 bg-red-500 text-white p-2 rounded-md hover:bg-red-600"
+                        onClick={handleLogout}
+                        type="button"
+                    >
+                        Logout
+                    </button>
                 </form>
-                <button
-                    type="button" // Pastikan type 'button' untuk reset
-                    onClick={() => {
-                        setSearch(""); // Reset search input
-                        router.get(
-                            route("Home"),
-                            {},
-                            {
-                                preserveState: true,
-                                preserveScroll: true,
-                            }
-                        );
-                    }}
-                    className="bg-gray-500 text-white px-4 py-2 rounded mb-5"
-                >
-                    Reset
-                </button>
             </div>
 
             {flashMsg && (
