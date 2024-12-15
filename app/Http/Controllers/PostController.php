@@ -5,35 +5,43 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
-use function PHPSTORM_META\type;
 
 class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
     public function index(Request $request)
     {
         $search = $request->input('search');
-
-        $posts = Post::query()
-        ->when($search, function ($query, $search) {
-            return $query->where('author', 'like', "%$search%")
-            ->orWhere('title', 'like', "%$search%")
-            ->orWhere('body', 'like', "%$search%");
-        })
-        ->latest()
-        ->paginate(10);
-
-    // Kirim data ke frontend
+    
+        // Cache key unik untuk setiap pencarian
+        $cacheKey = 'posts_search_' . ($search ?: 'all') . '_page_' . ($request->input('page', 1));
+    
+        // Gunakan caching untuk query
+        $posts = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($search) {
+            return Post::query()
+                ->when($search, function ($query, $search) {
+                    return $query->where('author', 'like', "%$search%")
+                        ->orWhere('title', 'like', "%$search%")
+                        ->orWhere('body', 'like', "%$search%");
+                })
+                ->latest()
+                ->paginate(10);
+        });
+    
+        // Kirim data ke frontend
         return inertia('Home', [
             'posts' => $posts,
             'filters' => [
                 'search' => $search,
             ],
         ]);
-    }   
+    }
+    
 
     /**
      * Show the form for creating a new resource.
