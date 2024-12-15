@@ -22,7 +22,7 @@ class PostController extends Controller
         $cacheKey = 'posts_search_' . ($search ?: 'all') . '_page_' . ($request->input('page', 1));
     
         // Gunakan caching untuk query
-        $posts = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($search) {
+        $posts = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($search) {
             return Post::query()
                 ->when($search, function ($query, $search) {
                     return $query->where('author', 'like', "%$search%")
@@ -65,6 +65,8 @@ class PostController extends Controller
 
         Post::create($fields);
 
+        Cache::forget('posts_search_all_page_1');
+
         return redirect('/')->with([
             'message' => 'Post created successfully',
             'type' => 'success',
@@ -105,6 +107,8 @@ class PostController extends Controller
 
         $post->update($fields);
 
+        Cache::forget('posts_search_all_page_1');
+
         return redirect('/')->with([
             'message' => 'Post updated successfully',
             'type' => 'success',
@@ -118,8 +122,9 @@ class PostController extends Controller
     {
         sleep(2);
         $post->delete();
-        
 
+        Cache::forget('posts_search_all_page_1');
+        
         return redirect('/')->with([
             'message' => 'Post deleted successfully',
             'type' => 'success']);

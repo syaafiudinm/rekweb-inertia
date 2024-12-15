@@ -6,6 +6,7 @@ use App\Models\Post;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Cache;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,6 +17,8 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        Post::factory(15)->create();
+        Post::factory(10)->create();
+
+        Cache::flush();
     }
 }
